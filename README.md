@@ -13,6 +13,7 @@ The inclined baseline and its measured-element limitations are described in `bas
 | Component | Current status | Main limit |
 | --- | --- | --- |
 | `baseline/` | Global REBOUND gravity control, analytic no-moon control, timestep and sampling checks | Massless and collision-free; separate inclined control supplies coherent bending, not thermal thickness or damping |
+| `continuum/` | Experimental finite-grain Gaussian Hill evolution with conservative tags and budget diagnostics | No ring self-gravity or coherent bending; transient numerical controls, not validated Keeler physics |
 | `collision/` | Finite-grain Gaussian collision source with explicit native build and reference parity | Assumed molecular chaos and Gaussian columns; no spatial transport solver or dense-correlation calibration |
 | `validation/` | Small signed spring-dashpot contact reference, analytic pair/triple checks | Assumed contact time and restitution; not calibrated ice or a production ring solver |
 | `data/` | Verified archive download, restricted VICAR reader and descriptive native-pixel profiles | No crest isolation, calibrated uncertainty, ring-plane navigation or height inversion |
@@ -51,7 +52,7 @@ Planned outputs are an orbit-change and retreat comparison with uncertainty, ver
 
 ## Provenance and license
 
-The reference implementations were consolidated from the original Daphnis gravity, contact-validation and light-geometry experiments. Collision build, units and physical assumptions are in `collision/README.md`. Gaussian-column API, units, error flags and physical limits are in `observation/columns/README.md`. Archive URLs and checksums are in `data/products.json`; image limitations and outputs are in `data/README.md`. Detailed numerical contracts and parameter sources are in `baseline/README.txt` and `validation/README.txt`.
+The reference implementations were consolidated from the original Daphnis gravity, contact-validation and light-geometry experiments. Experimental continuum CLI, state and failure contracts are in `continuum/README.md`; observation comparison remains pending. Collision build, units and physical assumptions are in `collision/README.md`. Gaussian-column API, units, error flags and physical limits are in `observation/columns/README.md`. Archive URLs and checksums are in `data/products.json`; image limitations and outputs are in `data/README.md`. Detailed numerical contracts and parameter sources are in `baseline/README.txt` and `validation/README.txt`.
 
 Primary sources:
 
