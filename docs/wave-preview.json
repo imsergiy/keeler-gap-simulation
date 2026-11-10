@@ -1,0 +1,61 @@
+{
+  "status": "Reviewed unresolved-area numerical preview; not a Cassini fit or physical validation",
+  "figure_sha256": "fabda8ea948ee7962ac3791f9e1061ed736edae7f08f8414a8a9837ae7b2c8e8",
+  "identities_sha256": {
+    "input_columns": "34fa170a60c71d90c338e6fbb695af659ab1569fb6876f0c329b6bfe716a9ea5",
+    "config": "af24d777724d5b5fb440b7569808415c39ff9488597fe1cab63e831632d5854f",
+    "generator": "f4a217f920067353767a3e07eab81eacef4709eb7baf91227baf46cf9b2520ba",
+    "model": "cdb69f9d1e648f35fe19589912f2fa58609c0d3fb71e69d26315c97ad3fa805d",
+    "adaptive": "2f9354ce1b5f188daf72bf1a25861a567ef5ff92c2fa23ca72dec8ad1d4c63dd"
+  },
+  "source_run": {
+    "time_omega": 18.84955592153876,
+    "source_sha256": "e72dca8ee71128192db68244314ff834610ef06f991a51b2ab457f98e4717401",
+    "config_sha256": "4f71829b9f6b598bd2f327514b868a7fff8d85fb931e81290f88ca4e0803fb5c"
+  },
+  "geometry": {
+    "geometry_label": "representative, not measured or fitted",
+    "phase_deg": 75,
+    "sun_elevation_deg": 15,
+    "observer_elevation_deg": 90,
+    "sun": [
+      0.9659258262890683,
+      0.0,
+      0.25881904510252074
+    ],
+    "observer": [
+      6.123233995736766e-17,
+      0.0,
+      1.0
+    ]
+  },
+  "detector": {
+    "shape": [
+      8,
+      16
+    ],
+    "bounds_m": [
+      5000,
+      35000,
+      -200000,
+      100000
+    ],
+    "full_source_columns_shape": [
+      128,
+      32
+    ],
+    "subray_pixels": {
+      "4x4": 81,
+      "8x8": 14,
+      "16x16": 33
+    }
+  },
+  "cost_s": 1074.70521068573,
+  "source_failed_pixels": 0,
+  "area_unresolved_pixels": 14,
+  "area_target_I_over_F": 0.0002,
+  "max_successive_area_change_I_over_F": 0.00042429479739060014,
+  "area_estimate_is_rigorous_bound": false,
+  "limits": "No self-gravity; coplanar meanZ=0; representative geometry; no calibrated ice or observed height/brightness explanation. Artifact driver identity retained; not a claim that the public default8x4 CLI replays this cropped16x8 figure.",
+  "numerical_version_scope": "Source fields use pre-boundary-fix continuum reconstruction. Public cb3bc62 changes boundary discretization intentionally; no current-code bitwise trajectory claim applies to this figure."
+}

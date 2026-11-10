@@ -2,6 +2,16 @@
 
 This is a research prototype for Saturn's Keeler gap. It does not yet reproduce the complete observed ring response.
 
+[Results and limits](RESULTS.md) summarize the reviewed controls and remaining gates. All three scientific goals remain unestablished; this is an experimental pipeline with reviewed references and 27 small regression tests.
+
+| Goal | Current evidence | Open gate |
+| --- | --- | --- |
+| Downstream material retreat | Older-scheme continued cohort and exact handoffs | Corrected outlet study incomplete; fine moon exceeds approximation domain |
+| Brighter wave edges | Calibrated native-pixel profiles and actual-field light preview | Crest isolation, detector-area convergence and observed-geometry fit |
+| Vertical excitation and damping | Separate coherent gravity bending and Gaussian thickness diagnostics | Raw refinement fails 10% screen; no damping fit; coherent bending absent from continuum |
+
+Current moon-forced evolution fails fast at H/r>0.1 in any occupied cell; this guard does not validate earlier out-of-domain results. All three physical goals remain unestablished.
+
 The three scientific goals are:
 
 1. Measure the persistent ring orbit change after an encounter with Daphnis, separately from radial oscillation and observed edge retreat.
