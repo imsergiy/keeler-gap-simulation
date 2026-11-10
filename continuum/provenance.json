@@ -9,9 +9,10 @@
     "CLI directly imports public native backend and exposes asymmetric domain",
     "age omission label no longer references absent historical artifacts",
     "removed isolated legacy BGK collision function and model selector; specialized finite-contact branches without changing their expressions",
-    "native finite-size source is the sole production path; explicit no-collisions remains supported"
+    "native finite-size source is the sole production path; explicit no-collisions remains supported",
+    "reviewed boundary discretization: zero boundary-cell normal fluid slopes in limited_faces_fluid; no force, parameter, floor or complete interior-cell face change"
   ],
-  "physics": "Finite-contact evolution expressions unchanged; unused BGK source removed; required physics module injection retained; exact frozen smoke state/budget parity passed.",
+  "physics": "Native source and forces unchanged; boundary reconstruction intentionally changes numerical diffusion. Historical consolidation parity applies before this change.",
   "parity": {
     "reference": "frozen final_source_smoke",
     "config": {
@@ -36,7 +37,9 @@
     },
     "checkpoint_arrays_equal": 5,
     "budget_time_step_values_equal": true,
-    "AST_identical_physical_helpers": 14,
-    "operator_byte_identical": true
+    "AST_identical_physical_helpers": 13,
+    "operator_byte_identical": true,
+    "scope": "Historical consolidation parity BEFORE the intentional boundary reconstruction change; not current-trajectory parity",
+    "original_helper_count": 14
   }
 }

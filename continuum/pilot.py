@@ -77,6 +77,9 @@ def limited_faces_fluid(q,left,right,lo,hi):
         return np.where(same,np.sign(a)*np.minimum(np.minimum(2*np.abs(a),2*np.abs(b)),.5*np.abs(a+b)),0.)
     sx=mc(q-np.concatenate([left,q[:,:,:-1]],2),np.concatenate([q[:,:,1:],right],2)-q)
     sy=mc(q-np.concatenate([lo,q[:,:-1,:]],1),np.concatenate([q[:,1:,:],hi],1)-q)
+    # Exterior states are face boundary data, not cell averages for a normal slope.
+    sx[:,:,[0,-1]]=0.
+    sy[:,[0,-1],:]=0.
     def good(theta):
         return valid_cells(q+.5*theta*sx)&valid_cells(q-.5*theta*sx)&valid_cells(q+.5*theta*sy)&valid_cells(q-.5*theta*sy)
     full=good(np.ones_like(q[0]));theta=np.ones_like(q[0])

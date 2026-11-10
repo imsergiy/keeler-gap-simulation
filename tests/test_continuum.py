@@ -103,3 +103,27 @@ class ContinuumTests(unittest.TestCase):
             self.assertLess(abs(summary['tag_mass_residual']), 1e-10)
             with self.assertRaises(FileExistsError):
                 p.run(c, operator)
+
+
+class BoundaryReconstructionTests(unittest.TestCase):
+    def test_face_data_do_not_create_hot_near_vacuum_boundary_state(self):
+        c = p.Config(nx=5, ny=5, moon=False, collisions=False)
+        x, y, dx, dy = p.geometry(c)
+        q = np.zeros((10, 5, 5))
+        q[0] = np.array([1., 5., 9., 13., 17.])*1e-6
+        q[3] = np.array([1., 1.5, 2., 2.5, 3.])*1e-6
+        q[5] = .5*q[0]; q[6] = q[0]; q[8] = .7*q[0]; q[9] = .2*q[0]
+        self.assertTrue(p.valid(q, x)[0])
+        xm, xp, ym, yp, _ = p.limited_faces(q, q[:, :, :1]*0, q[:, :, -1:], q[:, :1, :], q[:, -1:, :])
+        np.testing.assert_array_equal(xm[:9, :, 0], q[:9, :, 0])
+        np.testing.assert_array_equal(xp[:9, :, -1], q[:9, :, -1])
+        np.testing.assert_array_equal(ym[:9, 0, :], q[:9, 0, :])
+        np.testing.assert_array_equal(yp[:9, -1, :], q[:9, -1, :])
+        _, boundary_speed = p.flux(xm[:, :, :1], x[:, :1], 0)
+        self.assertLess(boundary_speed.max(), 2.)
+        np.testing.assert_allclose((xm+xp)/2, q, atol=1e-20, rtol=0)
+        np.testing.assert_allclose((ym+yp)/2, q, atol=1e-20, rtol=0)
+        tr, boundary, _, jr, bj, _ = p.transport(q, c, x, y, dx, dy)
+        self.assertLess(abs(tr[0].sum()*dx*dy+boundary[0]), 1e-10)
+        self.assertLess(abs(tr[9].sum()*dx*dy+boundary[9]), 1e-10)
+        self.assertLess(abs(jr.sum()*dx*dy+bj), 1e-9)
