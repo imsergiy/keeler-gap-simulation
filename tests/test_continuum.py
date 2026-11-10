@@ -127,3 +127,46 @@ class BoundaryReconstructionTests(unittest.TestCase):
         self.assertLess(abs(tr[0].sum()*dx*dy+boundary[0]), 1e-10)
         self.assertLess(abs(tr[9].sum()*dx*dy+boundary[9]), 1e-10)
         self.assertLess(abs(jr.sum()*dx*dy+bj), 1e-9)
+
+
+class MoonDomainTests(unittest.TestCase):
+    def test_domain_stop_preserves_tiny_occupied_candidate(self):
+        from unittest.mock import patch
+        import json
+        c = p.Config(nx=8, ny=8, end=.01)
+        x, y, _, _ = p.geometry(c)
+        ordinary = p.initial(x, y, c)
+        ordinary[6] = ordinary[0]*.02**2*(x*x+y*y)
+        before = ordinary.copy(); p.check_moon_domain(ordinary, c, x, y)
+        np.testing.assert_array_equal(ordinary, before)
+        candidate = ordinary.copy(); candidate[:, 1, 1] *= 1e-30
+        candidate[6, 1, 1] = candidate[0, 1, 1]*.101**2*(x[0, 1]**2+y[1, 0]**2)
+        with self.assertRaises(p.ApplicationDomainError):p.check_moon_domain(candidate, c, x, y)
+        c.moon = False; p.check_moon_domain(candidate, c, x, y); c.moon = True
+        class CandidateOperator(ContactOperator):
+            def __call__(self, state, config, grid, dt):
+                super().__call__(state, config, grid, dt)
+                return candidate.copy(), 0.
+        with tempfile.TemporaryDirectory() as directory:
+            c.output = str(Path(directory)/'stop'); c.collisions = False
+            operator = CandidateOperator(NativeGaussianEnskog().loss_gain, physics=p)
+            with patch.object(p, 'initial', return_value=ordinary.copy()):
+                with self.assertRaisesRegex(p.ApplicationDomainError, 'application domain'):
+                    p.run(c, operator)
+            with np.load(Path(c.output)/'failure.npz') as failure:
+                np.testing.assert_array_equal(failure['last_accepted'], ordinary)
+                np.testing.assert_array_equal(failure['failed_candidate'], candidate)
+            detail = json.loads((Path(c.output)/'domain.json').read_text())
+            self.assertEqual(detail['steps'], 0)
+            self.assertEqual(detail['phase'], 'application-domain')
+
+    def test_source_midpoint_is_checked_before_moon_force(self):
+        c = p.Config(nx=8, ny=8)
+        x, y, _, _ = p.geometry(c); q = p.initial(x, y, c)
+        q[6] = q[0]*.02**2*(x*x+y*y); q[8] = q[0]*1e6
+        before = q.copy()
+        with self.assertRaises(p.ApplicationDomainError) as caught:
+            p.source_step(q, c, x, y, 1.)
+        self.assertGreater(caught.exception.ratio, .1)
+        self.assertFalse(np.array_equal(caught.exception.state[6], q[6]))
+        np.testing.assert_array_equal(q, before)

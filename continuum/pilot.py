@@ -119,7 +119,22 @@ def vertical_energy(q,c,x,y,dx,dy):
     nu=1+mu/(x*x+y*y)**1.5
     return float(np.sum(.5*(q[8]+nu*q[6]))*dx*dy)
 
+class ApplicationDomainError(ValueError):
+    def __init__(self, state, ratio):
+        self.state=state.copy();self.ratio=float(ratio)
+        super().__init__(f'Moon thin-column application domain exceeded: H/r={ratio:.8g} > 0.1')
+
+
+def check_moon_domain(q,c,x,y):
+    if not c.moon:return
+    occupied=q[0]>0
+    squared=np.divide(q[6],q[0],out=np.zeros_like(q[0]),where=occupied)/(x*x+y*y)
+    if np.any(occupied&(squared>.1**2)):
+        raise ApplicationDomainError(q,np.sqrt(squared[occupied].max()))
+
+
 def forcing(q,c,x,y):
+    check_moon_domain(q,c,x,y)
     n,u,v,uy,xx,xy,yy,h,ss,w=primitive(q,x)
     mu=MU if c.moon else 0;r2=x*x+y*y;r=np.sqrt(r2)
     fx=-mu*x/r**3+1.5*mu*x*h/r**5;fy=-mu*y/r**3+1.5*mu*y*h/r**5
@@ -198,11 +213,14 @@ def transport(q,c,x,y,dx,dy):
     return rhs,b,float(be),jr,float(bj),stats
 
 def source_step(q,c,x,y,dt):
+    check_moon_domain(q,c,x,y)
     n,u,v,uy,xx,xy,yy,h,ss,w=primitive(q,x)
     mu=MU if c.moon else 0
     r=np.sqrt(x*x+y*y);nu=1+mu/r**3
     om=np.sqrt(nu);ch=np.cos(om*dt/2);sh=np.sin(om*dt/2)
     hmid=ch*ch*h+2*ch*sh/om*ss+sh*sh/nu*w
+    midpoint=q.copy();midpoint[6]=n*hmid
+    check_moon_domain(midpoint,c,x,y)
     ax=-mu*x/r**3+1.5*mu*x*hmid/r**5
     ay=-mu*y/r**3+1.5*mu*y*hmid/r**5
     co=np.cos(dt);si=np.sin(dt)
@@ -216,6 +234,7 @@ def source_step(q,c,x,y,dt):
     z[6]=n*(co*co*h+2*co*si/om*ss+si*si/nu*w)
     z[7]=n*(-om*co*si*h+(co*co-si*si)*ss+co*si/om*w)
     z[8]=n*(nu*si*si*h-2*om*co*si*ss+co*co*w)
+    check_moon_domain(z,c,x,y)
     return z,n*ay*dt
 
 def energy(q,c,x,y,dx,dy):
@@ -255,6 +274,20 @@ def run(c,collision_step):
     start=time.perf_counter();next_frame=np.pi/2;frame_index=1
     def save_state(filename):
         np.savez_compressed(out/filename,state=q,initial=init,x=x,y=y,time_omega=t,time_seconds=t/OMEGA,history=np.array(history),boundary=bsum,canonical_boundary=jboundary,moon_torque=torque,energy_boundary=eb+contact_energy_boundary,kinetic_energy_boundary=eb,collision_loss=loss,compatibility_work=compat_work,tag_exported_mass=tag_exported,tag_exported_gc_mass=tag_export_gc)
+    domain_initial_accepted=False
+    def application_call(function,state,*args):
+        try:return function(state,c,x,y,*args)
+        except ApplicationDomainError as error:
+            save_state('checkpoint_latest.npz')
+            np.savez_compressed(out/'failure.npz',last_accepted=q if domain_initial_accepted else np.array([]),failed_candidate=error.state,x=x,y=y)
+            detail=dict(reason=str(error),phase='application-domain',time_omega=t,steps=step,has_accepted_state=domain_initial_accepted,
+                        max_H_over_r=error.ratio,limit=.1,occupied_policy='all N>0; no density mask',
+                        config_sha256=config_hash,source_sha256=source_hash)
+            (out/'domain.json').write_text(json.dumps(detail,indent=2))
+            (out/'failure.json').write_text(json.dumps(detail,indent=2))
+            raise
+    application_call(check_moon_domain,q)
+    domain_initial_accepted=True
     save_state('frame_00.npz')
     def collision_call(state,h):
         try:return collision_step(state,c,x,h)
@@ -271,30 +304,34 @@ def run(c,collision_step):
         dt=min(dt,collision_step.timestep_bound(q,c,x))
         while True:
             qa,dl=collision_call(q,dt/2)
+            application_call(check_moon_domain,qa)
             cj1=qa[2]-q[2];cd1=collision_step.last.copy()
             vcol1=vertical_energy(qa,c,x,y,dx,dy)-vertical_energy(q,c,x,y,dx,dy)
-            vbefore1=vertical_energy(qa,c,x,y,dx,dy);fw1=forcing(qa,c,x,y)
-            qa,tq1=source_step(qa,c,x,y,dt/2)
-            fw1=dt/4*(fw1+forcing(qa,c,x,y))
+            vbefore1=vertical_energy(qa,c,x,y,dx,dy);fw1=application_call(forcing,qa)
+            qa,tq1=application_call(source_step,qa,dt/2)
+            fw1=dt/4*(fw1+application_call(forcing,qa))
             vs1=vertical_energy(qa,c,x,y,dx,dy)-vbefore1
             epre=energy(qa,c,x,y,dx,dy)
             tr1,b1,be1,jr1,bj1,ls1=transport(qa,c,x,y,dx,dy)
             stage=qa+dt*tr1
+            application_call(check_moon_domain,stage)
             tested=stage
             ok,_=valid(stage,x)
             ok=ok and dt*(ls1['max_ax']/dx+ls1['max_ay']/dy)<=.2
             if ok:
                 tr2,b2,be2,jr2,bj2,ls2=transport(stage,c,x,y,dx,dy)
                 qb=.5*qa+.5*(stage+dt*tr2)
+                application_call(check_moon_domain,qb)
                 tested=qb
                 ok,detail=valid(qb,x)
                 ok=ok and dt*(ls2['max_ax']/dx+ls2['max_ay']/dy)<=.2
             if ok:
-                vbefore2=vertical_energy(qb,c,x,y,dx,dy);fw2=forcing(qb,c,x,y)
-                qb,tq2=source_step(qb,c,x,y,dt/2)
-                fw2=dt/4*(fw2+forcing(qb,c,x,y))
+                vbefore2=vertical_energy(qb,c,x,y,dx,dy);fw2=application_call(forcing,qb)
+                qb,tq2=application_call(source_step,qb,dt/2)
+                fw2=dt/4*(fw2+application_call(forcing,qb))
                 vs2=vertical_energy(qb,c,x,y,dx,dy)-vbefore2
                 qc,dl2=collision_call(qb,dt/2)
+                application_call(check_moon_domain,qc)
                 cj2=qc[2]-qb[2];cd2=collision_step.last.copy()
                 vcol2=vertical_energy(qc,c,x,y,dx,dy)-vertical_energy(qb,c,x,y,dx,dy)
                 ecompat_before=energy(qc,c,x,y,dx,dy)

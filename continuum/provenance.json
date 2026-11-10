@@ -10,7 +10,8 @@
     "age omission label no longer references absent historical artifacts",
     "removed isolated legacy BGK collision function and model selector; specialized finite-contact branches without changing their expressions",
     "native finite-size source is the sole production path; explicit no-collisions remains supported",
-    "reviewed boundary discretization: zero boundary-cell normal fluid slopes in limited_faces_fluid; no force, parameter, floor or complete interior-cell face change"
+    "reviewed boundary discretization: zero boundary-cell normal fluid slopes in limited_faces_fluid; no force, parameter, floor or complete interior-cell face change",
+    "fail-fast all-occupied H/r<=0.1 application-domain checks for moon force/source including midpoint; forces unchanged; no density mask or retry"
   ],
   "physics": "Native source and forces unchanged; boundary reconstruction intentionally changes numerical diffusion. Historical consolidation parity applies before this change.",
   "parity": {
@@ -37,7 +38,7 @@
     },
     "checkpoint_arrays_equal": 5,
     "budget_time_step_values_equal": true,
-    "AST_identical_physical_helpers": 13,
+    "AST_identical_physical_helpers": 11,
     "operator_byte_identical": true,
     "scope": "Historical consolidation parity BEFORE the intentional boundary reconstruction change; not current-trajectory parity",
     "original_helper_count": 14
