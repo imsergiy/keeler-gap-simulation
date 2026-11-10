@@ -1,0 +1,7 @@
+{
+  "coarse": {"radial_samples": 5, "phase_samples": 101, "steps_per_orbit": 4096},
+  "time-fine": {"radial_samples": 5, "phase_samples": 101, "steps_per_orbit": 8192},
+  "no-moon": {"radial_samples": 5, "phase_samples": 101, "steps_per_orbit": 4096, "moon": false},
+  "no-moon-fine": {"radial_samples": 5, "phase_samples": 101, "steps_per_orbit": 8192, "moon": false},
+  "sample-fine": {"radial_samples": 9, "phase_samples": 201, "steps_per_orbit": 8192}
+}

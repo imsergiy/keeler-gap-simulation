@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+results/
+baseline/*.png
+baseline/*.pdf
+baseline/summary.json
+baseline/metrics.csv
+validation/results.json
+validation/summary.json
+observation/results.json
+observation/summary.json
+observation/parameters.json
