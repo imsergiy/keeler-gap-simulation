@@ -8,11 +8,11 @@ The three scientific goals are:
 2. Explain vertical excitation and damping with a justified collision and transport model.
 3. Compare predicted geometry and brightness with Cassini observations, with explicit illumination and viewing geometry.
 
-The current components include independent numerical references and descriptive calibrated image analysis. They do not form a coupled solution.
+The inclined baseline and its measured-element limitations are described in `baseline/INCLINED.md`. The current components include independent numerical references and descriptive calibrated image analysis. They do not form a coupled solution.
 
 | Component | Current status | Main limit |
 | --- | --- | --- |
-| `baseline/` | Global REBOUND gravity control, analytic no-moon control, timestep and sampling checks | Collision-free, massless, circular and coplanar; no vertical excitation or damping |
+| `baseline/` | Global REBOUND gravity control, analytic no-moon control, timestep and sampling checks | Massless and collision-free; separate inclined control supplies coherent bending, not thermal thickness or damping |
 | `collision/` | Finite-grain Gaussian collision source with explicit native build and reference parity | Assumed molecular chaos and Gaussian columns; no spatial transport solver or dense-correlation calibration |
 | `validation/` | Small signed spring-dashpot contact reference, analytic pair/triple checks | Assumed contact time and restitution; not calibrated ice or a production ring solver |
 | `data/` | Verified archive download, restricted VICAR reader and descriptive native-pixel profiles | No crest isolation, calibrated uncertainty, ring-plane navigation or height inversion |
@@ -30,6 +30,7 @@ python collision/native/build.py
 python -m unittest discover -s tests -v
 python baseline/run.py --out results/small --radial 3 --phases 21
 python baseline/analyze.py --run
+python -m baseline.inclined --out results/inclined
 python validation/run.py
 python observation/checks.py
 python -m observation.columns.checks
