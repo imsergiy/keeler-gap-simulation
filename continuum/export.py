@@ -23,6 +23,8 @@ def export_columns(run_directory, output):
         raise ValueError('Checkpoint configuration provenance mismatch')
     if summary['source_sha256'] != hashes['executed_source.py']:
         raise ValueError('Executed source provenance mismatch')
+    if hashes['executed_source.py'] != digest(pilot.__file__):
+        raise ValueError('Executed source is incompatible with the current pilot interpreter')
     c = pilot.Config(**config)
     if c.ring_gravity or summary['collision_closure'] != 'finite_size_enskog_control':
         raise ValueError('Only the declared finite-size no-ring-gravity control is supported')

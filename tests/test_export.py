@@ -46,7 +46,7 @@ class ExportTests(unittest.TestCase):
             load_columns(root/'export/columns.npz')
 
     def test_provenance_and_undefined_vacuum_rejected_before_output(self):
-        for change in ('config', 'source', 'vacuum'):
+        for change in ('config', 'source', 'old_consistent_source', 'vacuum'):
             with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory); source = root/'run'
                 q, x, y = self.make_run(source)
@@ -54,6 +54,15 @@ class ExportTests(unittest.TestCase):
                     path = source/'config.json'; value = json.loads(path.read_text()); value['width'] = 4.; path.write_text(json.dumps(value))
                 elif change == 'source':
                     path = source/'executed_source.py'; path.write_bytes(path.read_bytes()+b'\n')
+                elif change == 'old_consistent_source':
+                    path = source/'executed_source.py'
+                    previous = path.read_bytes().replace(b'L=1000.', b'L=2000.')
+                    self.assertNotEqual(previous, path.read_bytes())
+                    path.write_bytes(previous)
+                    summary_path = source/'summary.json'
+                    summary = json.loads(summary_path.read_text())
+                    summary['source_sha256'] = hashlib.sha256(previous).hexdigest()
+                    summary_path.write_text(json.dumps(summary))
                 else:
                     q[:, 1, 1] = 0.; np.savez(source/'checkpoint.npz', state=q, x=x, y=y)
                 with self.assertRaises(ValueError):
