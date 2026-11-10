@@ -52,7 +52,7 @@ Planned outputs are an orbit-change and retreat comparison with uncertainty, ver
 
 ## Provenance and license
 
-The reference implementations were consolidated from the original Daphnis gravity, contact-validation and light-geometry experiments. Experimental continuum CLI, state and failure contracts are in `continuum/README.md`; observation comparison remains pending. Collision build, units and physical assumptions are in `collision/README.md`. Gaussian-column API, units, error flags and physical limits are in `observation/columns/README.md`. Archive URLs and checksums are in `data/products.json`; image limitations and outputs are in `data/README.md`. Detailed numerical contracts and parameter sources are in `baseline/README.txt` and `validation/README.txt`.
+The reference implementations were consolidated from the original Daphnis gravity, contact-validation and light-geometry experiments. Experimental continuum CLI, state and failure contracts are in `continuum/README.md`; observation comparison remains pending. Collision build, units and physical assumptions are in `collision/README.md`. Gaussian-column API, units, error flags and physical limits are in `observation/columns/README.md`. Offline geometric states at the two image UTCs are documented in `data/epochs/README.md`; they are future-input references, not pixel navigation or installed solver epochs. Archive URLs and checksums are in `data/products.json`; image limitations and outputs are in `data/README.md`. Detailed numerical contracts and parameter sources are in `baseline/README.txt` and `validation/README.txt`.
 
 Primary sources:
 
