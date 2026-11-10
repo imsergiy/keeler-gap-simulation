@@ -99,7 +99,31 @@ class Columns:
         return float(s*delta/ray[2])
 
     def optical_depth(self, point, ray):
-        return sum(self.segment_tau(point,ray,*seg) for seg in self.segments(point,ray,0))
+        low, high = 0., np.inf
+        crossings=[]
+        for axis,edges in enumerate((self.x_edges,self.y_edges)):
+            if abs(ray[axis])<1e-14:
+                if not edges[0]<=point[axis]<edges[-1]:return 0.
+            else:
+                ts=(edges-point[axis])/ray[axis]
+                low=max(low,min(ts[0],ts[-1]));high=min(high,max(ts[0],ts[-1]))
+                crossings.append(ts)
+        if low>=high:return 0.
+        ts=np.concatenate(crossings) if crossings else np.empty(0)
+        ts=np.r_[low,np.unique(ts[(ts>low)&(ts<high)]),high]
+        a,b=ts[:-1],ts[1:]
+        if len(a)==1 and not np.isfinite(b[0]):mid=np.array([a[0]+1])
+        else:mid=(a+b)/2
+        ix=np.searchsorted(self.x_edges,point[0]+mid*ray[0],side='right')-1
+        iy=np.searchsorted(self.y_edges,point[1]+mid*ray[1],side='right')-1
+        h=self.height[iy,ix];z=self.mean_z[iy,ix];s=self.kappa*self.sigma[iy,ix]
+        if abs(ray[2])<1e-14:
+            return float(np.sum(s/(np.sqrt(2*np.pi)*h)*np.exp(-.5*((point[2]-z)/h)**2)*(b-a)))
+        u=(point[2]+a*ray[2]-z)/h;v=(point[2]+b*ray[2]-z)/h
+        delta=ndtr(v)-ndtr(u)
+        upper=(u>0)&(v>0)
+        delta[upper]=ndtr(-u[upper])-ndtr(-v[upper])
+        return float(np.sum(s*delta/ray[2]))
 
     def render(self, points, sun, observer, omega=0.5, order=16, tau_cut=36):
         """I/F=pi I/Fsun at orthographic rays through points; exterior is vacuum.
