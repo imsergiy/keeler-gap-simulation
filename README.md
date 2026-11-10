@@ -13,6 +13,7 @@ The current components include independent numerical references and descriptive 
 | Component | Current status | Main limit |
 | --- | --- | --- |
 | `baseline/` | Global REBOUND gravity control, analytic no-moon control, timestep and sampling checks | Collision-free, massless, circular and coplanar; no vertical excitation or damping |
+| `collision/` | Finite-grain Gaussian collision source with explicit native build and reference parity | Assumed molecular chaos and Gaussian columns; no spatial transport solver or dense-correlation calibration |
 | `validation/` | Small signed spring-dashpot contact reference, analytic pair/triple checks | Assumed contact time and restitution; not calibrated ice or a production ring solver |
 | `data/` | Verified archive download, restricted VICAR reader and descriptive native-pixel profiles | No crest isolation, calibrated uncertainty, ring-plane navigation or height inversion |
 | `observation/` | Opaque-sphere Lambert controls and Gaussian-column single scattering with adaptive source and fixed detector checks | Assumed reflectance; source flags and pixel-area refinement are separate; no calibrated ice brightness or Cassini fit |
@@ -24,7 +25,8 @@ Use Python 3.12 and a virtual environment. The dependency versions below are the
 ```sh
 python -m venv .venv
 . .venv/bin/activate
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt -r requirements-build.txt
+python collision/native/build.py
 python -m unittest discover -s tests -v
 python baseline/run.py --out results/small --radial 3 --phases 21
 python baseline/analyze.py --run
@@ -48,7 +50,7 @@ Planned outputs are an orbit-change and retreat comparison with uncertainty, ver
 
 ## Provenance and license
 
-The reference implementations were consolidated from the original Daphnis gravity, contact-validation and light-geometry experiments. Gaussian-column API, units, error flags and physical limits are in `observation/columns/README.md`. Archive URLs and checksums are in `data/products.json`; image limitations and outputs are in `data/README.md`. Detailed numerical contracts and parameter sources are in `baseline/README.txt` and `validation/README.txt`.
+The reference implementations were consolidated from the original Daphnis gravity, contact-validation and light-geometry experiments. Collision build, units and physical assumptions are in `collision/README.md`. Gaussian-column API, units, error flags and physical limits are in `observation/columns/README.md`. Archive URLs and checksums are in `data/products.json`; image limitations and outputs are in `data/README.md`. Detailed numerical contracts and parameter sources are in `baseline/README.txt` and `validation/README.txt`.
 
 Primary sources:
 
