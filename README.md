@@ -8,7 +8,7 @@ The three scientific goals are:
 2. Explain vertical excitation and damping with a justified collision and transport model.
 3. Compare predicted geometry and brightness with Cassini observations, with explicit illumination and viewing geometry.
 
-The inclined baseline and its measured-element limitations are described in `baseline/INCLINED.md`. The current components include independent numerical references and descriptive calibrated image analysis. They do not form a coupled solution.
+The inclined baseline and its measured-element limitations are described in `baseline/INCLINED.md`. The current components include independent numerical references and descriptive calibrated image analysis. They do not establish a complete observed Keeler solution. A guarded SI snapshot-to-light bridge connects the experimental continuum fields to the numerical observation reference; see `observation/BRIDGE.md`.
 
 | Component | Current status | Main limit |
 | --- | --- | --- |
