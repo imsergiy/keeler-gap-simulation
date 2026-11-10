@@ -1,0 +1,42 @@
+{
+  "retrieved_utc_date": "2026-11-10",
+  "measured_reference": {
+    "paper": "Jacobson et al. (2008), Revised Orbits of Saturn's Small Inner Satellites, AJ 135, 261\u2013263, Table 2",
+    "primary_doi": "https://doi.org/10.1088/0004-6256/135/1/261",
+    "indexed_primary_paper_copy": "https://citeseerx.ist.psu.edu/document?doi=b702913580a2532361a0e997012c329aa8280718&repid=rep1&type=pdf",
+    "retrieval_note": "Publisher abstract and indexed text of primary-paper Table 2 were accessible; direct publisher/PDF fetches failed. Numerical e/i are independently consistent with Torii Table 1.",
+    "epoch_jd_tdb": 2453491.91412,
+    "a_km": 136505.5,
+    "a_uncertainty_km": 0.1,
+    "e": 3.31e-05,
+    "e_uncertainty": 6.2e-06,
+    "inclination_deg": 0.0036,
+    "inclination_uncertainty_deg": 0.0013,
+    "longitude_pericenter_deg": 83,
+    "longitude_pericenter_uncertainty_deg": 12,
+    "mean_longitude_deg": 222.949,
+    "mean_longitude_uncertainty_deg": 0.004,
+    "node_longitude_deg": 143,
+    "node_uncertainty_deg": 8,
+    "mean_longitude_rate_deg_day": 605.979162,
+    "pericenter_rate_deg_day": 2.96927,
+    "node_rate_deg_day": -2.95486,
+    "reference": "Saturn equatorial planetocentric; longitudes from Saturn-equator/ICRF-equator node; precessing mean elements, not native spherical Kepler osculating elements."
+  },
+  "current_jpl": {
+    "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html",
+    "warning": "JPL warns that mean elements must not be used to compute ephemerides; current rounded Daphnis entries e=0.000 and i=0.0 do not resolve these small values."
+  },
+  "primary_context": {
+    "url": "https://arxiv.org/abs/2504.10989",
+    "relevant": "Torii et al. Table 1 reproduces early-Cassini e/i estimates; later orbital variation is discussed. Their results separate large-scale inclined-orbit bending from localized collision-induced walls."
+  },
+  "observation_2009": {
+    "url": "https://science.nasa.gov/resource/gravity-induced-undulations/",
+    "image": "PIA11504",
+    "date": "2009-04-30",
+    "reported_sun_moon_spacecraft_phase_deg": 73,
+    "note": "Photometric phase is not moon argument of latitude, true anomaly or node. Caption does not provide exact exposure time or orbital phase."
+  },
+  "phase_limit": "No 2006/2009 observed orbital phase is assigned. A specific exposure UTC, a consistent ephemeris and equatorial-frame transform are required. Published epoch angles do exist, but extrapolating a spherical Kepler orbit from them does not reproduce precessing Saturn-system ephemerides. All experiment f/u angles are declared sensitivity choices."
+}

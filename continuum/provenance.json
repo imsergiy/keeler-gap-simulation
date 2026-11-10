@@ -1,0 +1,46 @@
+{
+  "scope": "Source mapping for mechanical package integration; original development sources are not duplicated.",
+  "frozen_owner_sources": {
+    "pilot_longdomain.py": "0eb71e060f3042e772165509ed5843215a37a6e9bc105039cd570b08646cc417",
+    "contact_operator.py": "087ed0cf93b4d353846dac3285b7e6325cdec85533293606ba594bf478f32ae9"
+  },
+  "changes": [
+    "pilot_longdomain.py renamed pilot.py with relative contact import",
+    "CLI directly imports public native backend and exposes asymmetric domain",
+    "age omission label no longer references absent historical artifacts",
+    "removed isolated legacy BGK collision function and model selector; specialized finite-contact branches without changing their expressions",
+    "native finite-size source is the sole production path; explicit no-collisions remains supported",
+    "reviewed boundary discretization: zero boundary-cell normal fluid slopes in limited_faces_fluid; no force, parameter, floor or complete interior-cell face change",
+    "fail-fast all-occupied H/r<=0.1 application-domain checks for moon force/source including midpoint; forces unchanged; no density mask or retry"
+  ],
+  "physics": "Native source and forces unchanged; boundary reconstruction intentionally changes numerical diffusion. Historical consolidation parity applies before this change.",
+  "parity": {
+    "reference": "frozen final_source_smoke",
+    "config": {
+      "nx": 32,
+      "ny": 128,
+      "end": 0.06283185307179587,
+      "cfl": 0.15,
+      "moon": true,
+      "collisions": true,
+      "xlo": 5.0,
+      "xhi": 45.0,
+      "yhalf": 200.0,
+      "y_center_km": 0.0,
+      "width": 4.0,
+      "restitution": 0.5,
+      "ring_gravity": false,
+      "max_wall_seconds": 3300.0,
+      "edge_km": 20.0,
+      "tag_width_km": 1.0,
+      "tag_ymin_km": 60.0,
+      "tag_ymax_km": 90.0
+    },
+    "checkpoint_arrays_equal": 5,
+    "budget_time_step_values_equal": true,
+    "AST_identical_physical_helpers": 11,
+    "operator_byte_identical": true,
+    "scope": "Historical consolidation parity BEFORE the intentional boundary reconstruction change; not current-trajectory parity",
+    "original_helper_count": 14
+  }
+}
