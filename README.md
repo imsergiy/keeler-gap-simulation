@@ -8,12 +8,13 @@ The three scientific goals are:
 2. Explain vertical excitation and damping with a justified collision and transport model.
 3. Compare predicted geometry and brightness with Cassini observations, with explicit illumination and viewing geometry.
 
-The current components are independent references. They do not form a coupled solution.
+The current components include independent numerical references and descriptive calibrated image analysis. They do not form a coupled solution.
 
 | Component | Current status | Main limit |
 | --- | --- | --- |
 | `baseline/` | Global REBOUND gravity control, analytic no-moon control, timestep and sampling checks | Collision-free, massless, circular and coplanar; no vertical excitation or damping |
 | `validation/` | Small signed spring-dashpot contact reference, analytic pair/triple checks | Assumed contact time and restitution; not calibrated ice or a production ring solver |
+| `data/` | Verified archive download, restricted VICAR reader and descriptive native-pixel profiles | No crest isolation, calibrated uncertainty, ring-plane navigation or height inversion |
 | `observation/` | Lambert geometry, sphere phase, shadow and occultation checks | Assumed reflectance; not calibrated ice brightness or Cassini photometry |
 
 ## Quick start
@@ -29,9 +30,11 @@ python baseline/run.py --out results/small --radial 3 --phases 21
 python baseline/analyze.py --run
 python validation/run.py
 python observation/checks.py
+python data/fetch.py
+python data/analyze.py --out data/results
 ```
 
-Run all commands from the repository root. The last observation command includes high-resolution checks and can take several minutes. `baseline/analyze.py --run` runs the five-case matrix and writes plots in `baseline/`. `baseline/run.py` writes trajectories, metrics and a native REBOUND checkpoint to the selected output folder. Contact and observation checks write JSON files next to their scripts. Generated data are ignored by Git. A failed assertion or exception must be investigated before results are used.
+Run all commands from the repository root. The observation command includes high-resolution checks and can take several minutes. `baseline/analyze.py --run` runs the five-case matrix and writes plots in `baseline/`. `baseline/run.py` writes trajectories, metrics and a native REBOUND checkpoint to the selected output folder. Contact and observation checks write JSON files next to their scripts. Generated data are ignored by Git. A failed assertion or exception must be investigated before results are used.
 
 The runtime target is 2 GiB RAM, four CPU cores and less than one hour per run. These scripts use one process at a time. Baseline configuration limits bound saved samples and steps; its wall limit is checked at each step, with partial results saved before an exception. The matrix also sets a one-hour subprocess timeout. These are safeguards, not a claim that every allowed custom input meets the resource target. The historical baseline matrix used about 221 MiB peak RAM and 63 seconds in its original environment; rerun it to measure your host. Contact and ray checks are bounded numerical examples, not arbitrary production scene inputs.
 
@@ -43,7 +46,7 @@ Planned outputs are an orbit-change and retreat comparison with uncertainty, ver
 
 ## Provenance and license
 
-The reference implementations were consolidated from the original Daphnis gravity, contact-validation and light-geometry experiments. Detailed numerical contracts and parameter sources are in `baseline/README.txt` and `validation/README.txt`.
+The reference implementations were consolidated from the original Daphnis gravity, contact-validation and light-geometry experiments. Archive URLs and checksums are in `data/products.json`; image limitations and outputs are in `data/README.md`. Detailed numerical contracts and parameter sources are in `baseline/README.txt` and `validation/README.txt`.
 
 Primary sources:
 

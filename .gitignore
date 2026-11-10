@@ -11,3 +11,4 @@ validation/summary.json
 observation/results.json
 observation/summary.json
 observation/parameters.json
+data/cache/
