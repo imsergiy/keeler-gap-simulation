@@ -57,13 +57,13 @@ convergence and invariants are necessary checks, not proof of correctness.
 Two resolutions and a small phase set do not prove a universal error bound.
 
 Provenance:
-Prior exact signed model definition: ../softis-evaluation/run.py and README.txt.
-Independent pair/triple oracle: ../contact-review/review.txt and audit.py.
-Published model: https://academic.oup.com/mnras/article/521/1/638/7040577
-SciPy event/precision API verified from primary current documentation:
+The signed contact law is specified above and implemented in run.py.
+The independent pair/triple oscillator formulas are stated above; run.py
+compares their velocity, duration and energy predictions with numerical runs.
+Published model context: https://academic.oup.com/mnras/article/521/1/638/7040577
+Primary SciPy event and precision API documentation:
 https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html
-The version-specific web page could not be retrieved. The installed 1.17.1
-primary API docstring is saved as scipy-solve_ivp-doc.txt and checked as well.
+The tested SciPy version is pinned in ../requirements.txt.
 SciPy documentation explicitly warns that multiple zero crossings in one
 step can be missed. DOP853 is recommended there for high precision.
 The executable source is run.py; summary.json includes its exact SHA256,
